@@ -1,0 +1,44 @@
+{
+  "name": "dgx-image-workbench-desktop",
+  "private": true,
+  "version": "0.1.1-alpha.35",
+  "license": "Apache-2.0",
+  "type": "module",
+  "description": "Standalone DGX image generation workbench.",
+  "author": "DGX Image Workbench Contributors",
+  "main": "src/main.mjs",
+  "scripts": {
+    "build:frontend": "npm.cmd --prefix ../frontend run build",
+    "test": "node --test",
+    "check": "node --check src/main.mjs && node --check src/ipc-contract.mjs && node --check src/image-desktop-adapter.mjs && node --check src/backend-composition.mjs && node --check src/tray-controller.mjs && node --check src/preload.cjs",
+    "pack": "npm run build:frontend && electron-builder --dir --publish never",
+    "dist:win": "npm run build:frontend && electron-builder --win nsis --publish never"
+  },
+  "devDependencies": {
+    "electron": "43.1.1",
+    "electron-builder": "26.15.3"
+  },
+  "build": {
+    "appId": "com.dgx.imageworkbench",
+    "productName": "DGX 智能生图工作台",
+    "icon": "build/icon.ico",
+    "asar": true,
+    "directories": { "output": "../artifacts/windows-installer" },
+    "files": ["src/**/*", "build/icon.ico", "package.json"],
+    "extraResources": [
+      { "from": "../frontend/dist", "to": "frontend/dist" },
+      { "from": "../backend/src", "to": "backend/src" },
+      { "from": "../model-catalog", "to": "model-catalog" },
+      { "from": "../contracts", "to": "contracts" }
+    ],
+    "win": { "target": ["nsis"] },
+    "nsis": {
+      "perMachine": false,
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false
+    }
+  }
+}

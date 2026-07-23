@@ -1,0 +1,8 @@
+# Keep repository text deterministic across Windows and GitHub Actions.
+* text=auto eol=lf
+
+# Product screenshots and installer-related media must not undergo text conversion.
+*.png binary
+*.ico binary
+*.exe binary
+*.zip binary

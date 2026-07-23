@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dgx-image-control.example/schemas/model-catalog.schema.json",
+  "title": "Allowlisted image model catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "catalogVersion", "capabilities", "artifacts"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "1.0"},
+    "catalogVersion": {"type": "string", "minLength": 1},
+    "capabilities": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/capability"}},
+    "artifacts": {"type": "array", "items": {"$ref": "#/$defs/artifact"}}
+  },
+  "$defs": {
+    "capability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["capabilityId", "displayName", "family", "requiredArtifactIds"],
+      "properties": {
+        "capabilityId": {"type": "string", "minLength": 1},
+        "displayName": {"type": "string", "minLength": 1},
+        "family": {"type": "string", "minLength": 1},
+        "requiredArtifactIds": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["artifactId", "kind", "family", "targetDirectoryId", "expectedFileName", "distribution"],
+      "properties": {
+        "artifactId": {"type": "string", "minLength": 1},
+        "kind": {"type": "string", "enum": ["checkpoint", "unet", "vae", "text-encoder", "vision-model", "lora"]},
+        "family": {"type": "string", "minLength": 1},
+        "targetDirectoryId": {"type": "string", "enum": ["comfy.checkpoints", "comfy.unet", "comfy.vae", "comfy.text_encoders", "comfy.loras.sdxl", "comfy.loras.flux", "vlm.registry"]},
+        "expectedFileName": {"type": "string", "minLength": 1},
+        "compatibilityAliases": {"type": "array", "items": {"type": "string", "minLength": 1}, "default": []},
+        "notes": {"type": "string"},
+        "bundleFiles": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["fileName", "sha256", "sizeBytes"],
+            "properties": {
+              "fileName": {"type": "string", "minLength": 1},
+              "sha256": {"type": "string", "pattern": "^[A-Fa-f0-9]{64}$"},
+              "sizeBytes": {"type": "integer", "minimum": 1}
+            }
+          },
+          "default": []
+        },
+        "distribution": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["status"],
+          "properties": {
+            "status": {"type": "string", "enum": ["research-required", "downloadable", "manual-import-only", "deprecated"]},
+            "sourceUrl": {"type": ["string", "null"], "format": "uri"},
+            "license": {"type": ["string", "null"]},
+            "licenseUrl": {"type": ["string", "null"], "format": "uri"},
+            "sha256": {"type": ["string", "null"], "pattern": "^[A-Fa-f0-9]{64}$"},
+            "sizeBytes": {"type": ["integer", "null"], "minimum": 1},
+            "usagePolicy": {"type": "string", "enum": ["permissive", "terms-required", "noncommercial-only", "unknown"]},
+            "acknowledgementRequired": {"type": "boolean", "default": false}
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dgx-image-control.example/schemas/generation.schema.json",
+  "title": "Validated image generation request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["capabilityId", "prompt", "negativePrompt", "size", "sampler", "attemptCount", "seed", "review"],
+  "properties": {
+    "capabilityId": {"type": "string", "enum": ["image.anime_portrait.pony", "image.anime_portrait.illustrious", "image.realistic_general.flux"]},
+    "prompt": {"type": "string", "minLength": 1, "maxLength": 12000},
+    "promptStructure": {
+      "type": "object",
+      "description": "Optional user-authored film prompt helper fields. The composed prompt remains the executable source for generation.",
+      "additionalProperties": false,
+      "properties": {
+        "subject": {"type": "string", "maxLength": 2000},
+        "action": {"type": "string", "maxLength": 2000},
+        "scene": {"type": "string", "maxLength": 2000},
+        "shotSize": {"type": "string", "maxLength": 1000},
+        "viewpoint": {"type": "string", "maxLength": 1000},
+        "lighting": {"type": "string", "maxLength": 1000},
+        "colorTone": {"type": "string", "maxLength": 1000},
+        "lensDepth": {"type": "string", "maxLength": 1000},
+        "composition": {"type": "string", "maxLength": 1000},
+        "styleQuality": {"type": "string", "maxLength": 2000}
+      }
+    },
+    "negativePrompt": {"type": "string", "default": "", "maxLength": 12000},
+    "ponyTags": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source": {"type": "string", "enum": ["", "source_anime", "source_cartoon", "source_furry", "source_pony"]},
+        "rating": {"type": "string", "enum": ["", "rating_safe", "rating_questionable", "rating_explicit"]}
+      }
+    },
+    "size": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": {"type": "integer", "minimum": 256, "maximum": 1536, "multipleOf": 16},
+        "height": {"type": "integer", "minimum": 256, "maximum": 1536, "multipleOf": 16}
+      }
+    },
+    "sampler": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["steps", "guidance", "name", "scheduler"],
+      "properties": {
+        "steps": {"type": "integer", "minimum": 1, "maximum": 50},
+        "guidance": {"type": "number", "minimum": 1, "maximum": 15},
+        "name": {"type": "string", "enum": ["euler", "euler_ancestral", "heun", "dpmpp_2m", "dpmpp_2m_sde_gpu"]},
+        "scheduler": {"type": "string", "enum": ["normal", "simple", "beta", "karras", "sgm_uniform"]}
+      }
+    },
+    "reference": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["libraryItemId", "semanticWeight", "reviewEnabled", "redrawMode"],
+      "properties": {
+        "libraryItemId": {"type": "string", "minLength": 1},
+        "semanticWeight": {"type": "number", "minimum": 0, "maximum": 1},
+        "reviewEnabled": {"type": "boolean"},
+        "redrawMode": {"type": "string", "enum": ["redraw", "reference-only"]}
+      }
+    },
+    "lora": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["bindingId", "modelWeight", "textWeight"],
+      "properties": {
+        "bindingId": {"type": "string", "minLength": 1},
+        "modelWeight": {"type": "number", "minimum": -2, "maximum": 2},
+        "textWeight": {"type": "number", "minimum": -2, "maximum": 2}
+      }
+    },
+    "attemptCount": {"type": "integer", "enum": [5, 25]},
+    "seed": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode", "value"],
+      "properties": {
+        "mode": {"type": "string", "enum": ["locked", "increment", "range_increment"]},
+        "value": {"type": "integer", "minimum": 0, "maximum": 2147483647},
+        "rangeEnd": {"type": ["integer", "null"], "minimum": 0, "maximum": 2147483647}
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "threshold", "stopAfterAttempts", "suggestionMode"],
+      "properties": {
+        "enabled": {"type": "boolean"},
+        "threshold": {"type": "integer", "minimum": 0, "maximum": 100},
+        "stopAfterAttempts": {"type": "integer", "enum": [5]},
+        "suggestionMode": {"type": "string", "const": "copy-only"}
+      }
+    }
+  }
+}

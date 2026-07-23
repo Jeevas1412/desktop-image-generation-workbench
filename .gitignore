@@ -1,0 +1,46 @@
+# Local-only archived baseline; it contains historical machine connection values.
+baselines/
+.workbuddy/
+
+# Generated user data and model assets never enter GitHub.
+data/
+models/
+outputs/
+semifinished/
+downloads/
+logs/
+screenshots/
+*.partial
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.gguf
+*.bin
+
+# Tooling and secrets.
+node_modules/
+dist/
+artifacts/
+.vite/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+__pycache__/
+*.tsbuildinfo
+
+# Internal planning and local audit records are not part of the public tree.
+03_生图工作台GitHub产品化项目框架与任务流程.md
+README_AGENT入口.md
+tasks/
+docs/2026-*.md
+docs/C-12.*.md
+
+# Local version-environment snapshots are isolated deployment workspaces.
+# Their source copies, installer artifacts, and per-environment records are
+# intentionally excluded from the public development repository.
+版本环境/
+版本环境索引.md

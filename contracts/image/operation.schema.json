@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dgx-image-control.example/schemas/operation.schema.json",
+  "title": "Confirmed local image operation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["operationId", "kind", "state", "createdAt", "requestedBy"],
+  "properties": {
+    "operationId": {"type": "string", "minLength": 1},
+    "kind": {"type": "string", "enum": ["binding-plan", "install-plan", "generation", "stop-job", "clear-semifinished"]},
+    "state": {"type": "string", "enum": ["draft", "awaiting-confirmation", "running", "verifying", "completed", "failed", "cancelled", "blocked"]},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "requestedBy": {"type": "string", "enum": ["electron-local-session"]},
+    "error": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {"type": "string", "enum": ["QUEUE_BUSY", "INSUFFICIENT_DISK", "CAPABILITY_MISSING", "COMPATIBILITY_UNKNOWN", "HASH_MISMATCH", "SOURCE_REQUIRES_MANUAL_IMPORT", "PATH_NOT_ALLOWED", "OWNERSHIP_DENIED", "VLM_UNAVAILABLE", "CANCELLED", "INTERNAL"]},
+        "message": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

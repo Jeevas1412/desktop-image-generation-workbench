@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "1.0",
+  "catalogVersion": "0.1.1-alpha.34",
+  "capabilities": [
+    {"capabilityId": "image.anime_portrait.pony", "displayName": "Pony 动画人像", "family": "sdxl-pony", "requiredArtifactIds": ["pony.checkpoint", "sdxl.vae"]},
+    {"capabilityId": "image.anime_portrait.illustrious", "displayName": "Illustrious 动画人像", "family": "sdxl-illustrious", "requiredArtifactIds": ["illustrious.checkpoint", "sdxl.vae"]},
+    {"capabilityId": "image.realistic_general.flux", "displayName": "FLUX 真实通用", "family": "flux-kontext", "requiredArtifactIds": ["flux.kontext.unet.fp8", "flux.clip-l", "flux.t5xxl", "flux.vae"]},
+    {"capabilityId": "vision.prompt_translate", "displayName": "提示词翻译", "family": "qwen3-vl", "requiredArtifactIds": ["qwen3-vl-8b-instruct.bundle"]},
+    {"capabilityId": "vision.image_review", "displayName": "图片审核", "family": "qwen3-vl", "requiredArtifactIds": ["qwen3-vl-8b-instruct.bundle"]}
+  ],
+  "artifacts": [
+    {
+      "artifactId": "pony.checkpoint",
+      "kind": "checkpoint",
+      "family": "sdxl-pony",
+      "targetDirectoryId": "comfy.checkpoints",
+      "expectedFileName": "ponyDiffusionV6XL_v6StartWithThisOne.safetensors",
+      "notes": "The catalog must require a final source allowlist signature before enabling download in a release build.",
+      "distribution": {"status": "downloadable", "sourceUrl": "https://huggingface.co/LyliaEngine/Pony_Diffusion_V6_XL/resolve/14885f1c01d7723bcbf676773def286c1fd733bc/ponyDiffusionV6XL_v6StartWithThisOne.safetensors", "license": "CDLA-Permissive-2.0", "licenseUrl": "https://cdla.dev/permissive-2-0/", "sha256": "67ab2fd8ec439a89b3fedb15cc65f54336af163c7eb5e4f2acc98f090a29b0b3", "sizeBytes": 6938041050, "usagePolicy": "permissive", "acknowledgementRequired": false}
+    },
+    {
+      "artifactId": "sdxl.vae",
+      "kind": "vae",
+      "family": "sdxl",
+      "targetDirectoryId": "comfy.vae",
+      "expectedFileName": "sdxl_vae.safetensors",
+      "distribution": {"status": "downloadable", "sourceUrl": "https://huggingface.co/LyliaEngine/Pony_Diffusion_V6_XL/resolve/14885f1c01d7723bcbf676773def286c1fd733bc/sdxl_vae.safetensors", "license": "CDLA-Permissive-2.0", "licenseUrl": "https://cdla.dev/permissive-2-0/", "sha256": "235745af8d86bf4a4c1b5b4f529868b37019a10f7c0b2e79ad0abca3a22bc6e1", "sizeBytes": 334641162, "usagePolicy": "permissive", "acknowledgementRequired": false}
+    },
+    {
+      "artifactId": "illustrious.checkpoint",
+      "kind": "checkpoint",
+      "family": "sdxl-illustrious",
+      "targetDirectoryId": "comfy.checkpoints",
+      "expectedFileName": "Illustrious-XL-v0.1.safetensors",
+      "notes": "The upstream Fair Public AI License requires a terms review before automation is enabled.",
+      "distribution": {"status": "manual-import-only", "sourceUrl": "https://huggingface.co/OnomaAIResearch/Illustrious-xl-early-release-v0/resolve/dca0dac303e6dc4b0c31d8001bc685b89b5d0204/Illustrious-XL-v0.1.safetensors", "license": "Fair Public AI License 1.0-SD", "licenseUrl": "https://freedevproject.org/faipl-1.0-sd/", "sha256": "3e15ba00387db678ab4a099f75771c4f5ac67fda9e7100a01d263eaf30145aa9", "sizeBytes": 6938040760, "usagePolicy": "terms-required", "acknowledgementRequired": true}
+    },
+    {
+      "artifactId": "flux.kontext.unet.fp8",
+      "kind": "unet",
+      "family": "flux-kontext",
+      "targetDirectoryId": "comfy.unet",
+      "expectedFileName": "flux1-dev-kontext_fp8_scaled.safetensors",
+      "notes": "ComfyUI-format FLUX.1 Kontext [dev] FP8 UNet. The workflow uses this exact registered filename and requires its VAE plus both text encoders.",
+      "distribution": {"status": "manual-import-only", "sourceUrl": "https://huggingface.co/Comfy-Org/flux1-kontext-dev_ComfyUI/resolve/c215e51f94373df8914054c98ba67575c0c2b157/split_files/diffusion_models/flux1-dev-kontext_fp8_scaled.safetensors", "license": "FLUX.1 [dev] Non-Commercial License", "licenseUrl": "https://huggingface.co/black-forest-labs/FLUX.1-Kontext-dev/blob/main/LICENSE.md", "sha256": "630ba795ec64283b4230ea23cf79406c2c68b7c578229ed139f30043eadb30a2", "sizeBytes": 11904640136, "usagePolicy": "noncommercial-only", "acknowledgementRequired": true}
+    },
+    {
+      "artifactId": "flux.clip-l",
+      "kind": "text-encoder",
+      "family": "flux",
+      "targetDirectoryId": "comfy.text_encoders",
+      "expectedFileName": "clip_l.safetensors",
+      "distribution": {"status": "downloadable", "sourceUrl": "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/6af2a98e3f615bdfa612fbd85da93d1ed5f69ef5/clip_l.safetensors", "license": "Apache-2.0", "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0", "sha256": "660c6f5b1abae9dc498ac2d21e1347d2abdb0cf6c0c0c8576cd796491d9a6cdd", "sizeBytes": 246144152, "usagePolicy": "permissive", "acknowledgementRequired": false}
+    },
+    {
+      "artifactId": "flux.t5xxl",
+      "kind": "text-encoder",
+      "family": "flux",
+      "targetDirectoryId": "comfy.text_encoders",
+      "expectedFileName": "t5xxl_fp16.safetensors",
+      "distribution": {"status": "downloadable", "sourceUrl": "https://huggingface.co/comfyanonymous/flux_text_encoders/resolve/6af2a98e3f615bdfa612fbd85da93d1ed5f69ef5/t5xxl_fp16.safetensors", "license": "Apache-2.0", "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0", "sha256": "6e480b09fae049a72d2a8c5fbccb8d3e92febeb233bbe9dfe7256958a9167635", "sizeBytes": 9787841024, "usagePolicy": "permissive", "acknowledgementRequired": false}
+    },
+    {
+      "artifactId": "flux.vae",
+      "kind": "vae",
+      "family": "flux",
+      "targetDirectoryId": "comfy.vae",
+      "expectedFileName": "ae.safetensors",
+      "distribution": {"status": "manual-import-only", "sourceUrl": "https://huggingface.co/black-forest-labs/FLUX.1-dev/resolve/3de623fc3c33e44ffbe2bad470d0f45bccf2eb21/ae.safetensors", "license": "FLUX.1 [dev] Non-Commercial License", "licenseUrl": "https://huggingface.co/black-forest-labs/FLUX.1-dev/blob/main/LICENSE.md", "sha256": "afc8e28272cd15db3919bacdb6918ce9c1ed22e96cb12c4d5ed0fba823529e38", "sizeBytes": 335304388, "usagePolicy": "noncommercial-only", "acknowledgementRequired": true}
+    },
+    {
+      "artifactId": "qwen3-vl-8b-instruct.bundle",
+      "kind": "vision-model",
+      "family": "qwen3-vl",
+      "targetDirectoryId": "vlm.registry",
+      "expectedFileName": "model.safetensors.index.json",
+      "notes": "Apache-2.0 upstream package. It is manual-import-only until a supported FP8 serving deployment contract and compatibility smoke test exist. The current archive uses a separately deployed FP8 service.",
+      "bundleFiles": [
+        {"fileName": "model-00001-of-00004.safetensors", "sha256": "d5d0aef0eb170fc7453a296c43c0849a56f510555d3588e4fd662bb35490aefa", "sizeBytes": 4902275944},
+        {"fileName": "model-00002-of-00004.safetensors", "sha256": "8be88fb5501e4d5719a6d4cc212e6a13480330e74f3e8c77daa1a68f199106b5", "sizeBytes": 4915962496},
+        {"fileName": "model-00003-of-00004.safetensors", "sha256": "83de00eafe6e0d57ccd009dbcf71c9974d74df2f016c27afb7e95aafd16b2192", "sizeBytes": 4999831048},
+        {"fileName": "model-00004-of-00004.safetensors", "sha256": "0a88b98e9f96270973f567e6a2c103ede6ccdf915ca3075e21c755604d0377a5", "sizeBytes": 2716270024}
+      ],
+      "distribution": {"status": "manual-import-only", "sourceUrl": "https://huggingface.co/Qwen/Qwen3-VL-8B-Instruct/tree/0c351dd01ed87e9c1b53cbc748cba10e6187ff3b", "license": "Apache-2.0", "licenseUrl": "https://www.apache.org/licenses/LICENSE-2.0", "sha256": null, "sizeBytes": null, "usagePolicy": "permissive", "acknowledgementRequired": false}
+    }
+  ]
+}

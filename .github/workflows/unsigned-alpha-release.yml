@@ -1,0 +1,98 @@
+name: Unsigned Alpha Draft Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version matching package.json (for example 0.1.1-alpha.1)
+        required: true
+        default: 0.1.1-alpha.35
+        type: string
+      acknowledgement:
+        description: Type PUBLISH_UNSIGNED_ALPHA to acknowledge Unknown Publisher warnings
+        required: true
+        type: string
+      generate_attestation:
+        description: Generate GitHub artifact attestation (private repositories require GitHub Enterprise Cloud)
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+concurrency:
+  group: unsigned-alpha-${{ inputs.version }}
+  cancel-in-progress: false
+
+jobs:
+  draft-prerelease:
+    name: Build and create draft prerelease
+    runs-on: windows-latest
+    timeout-minutes: 30
+    environment: unsigned-alpha
+
+    steps:
+      - name: Validate manual release acknowledgement
+        shell: pwsh
+        run: |
+          if ('${{ inputs.acknowledgement }}' -ne 'PUBLISH_UNSIGNED_ALPHA') {
+            throw 'Acknowledgement must exactly equal PUBLISH_UNSIGNED_ALPHA.'
+          }
+
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            frontend/package-lock.json
+            desktop/package-lock.json
+
+      - name: Verify public repository tree and release metadata
+        shell: pwsh
+        run: .\scripts\release\verify-public-tree.ps1 -RequireLicense
+
+      - name: Install locked dependencies
+        shell: pwsh
+        run: |
+          npm.cmd --prefix frontend ci
+          npm.cmd --prefix desktop ci
+
+      - name: Build and verify unsigned Alpha assets
+        shell: pwsh
+        run: .\scripts\release\prepare-unsigned-alpha.ps1 -Version '${{ inputs.version }}' -RequirePublishMetadata
+
+      - name: Generate GitHub provenance attestations
+        if: ${{ inputs.generate_attestation }}
+        uses: actions/attest@v4
+        with:
+          subject-path: artifacts/unsigned-alpha/${{ inputs.version }}/*
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: unsigned-alpha-${{ inputs.version }}
+          path: artifacts/unsigned-alpha/${{ inputs.version }}/*
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Create GitHub Draft Prerelease
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = 'v${{ inputs.version }}'
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -eq 0) { throw "Release already exists: $tag" }
+          $assetRoot = Resolve-Path 'artifacts/unsigned-alpha/${{ inputs.version }}'
+          $notes = Join-Path $assetRoot 'RELEASE_NOTES.md'
+          $assets = @(Get-ChildItem -LiteralPath $assetRoot -File | Where-Object Name -ne 'RELEASE_NOTES.md' | ForEach-Object FullName)
+          if ($assets.Count -eq 0) { throw 'No release assets found.' }
+          gh release create $tag @assets --target '${{ github.sha }}' --title "DGX Image Workbench ${{ inputs.version }} — UNSIGNED ALPHA" --notes-file $notes --draft --prerelease
+          if ($LASTEXITCODE -ne 0) { throw 'Draft prerelease creation failed.' }

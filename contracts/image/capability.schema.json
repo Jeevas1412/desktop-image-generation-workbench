@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dgx-image-control.example/schemas/capability.schema.json",
+  "title": "Image capability discovery result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["capabilityId", "status", "candidates", "checkedAt"],
+  "properties": {
+    "capabilityId": {
+      "type": "string",
+      "enum": [
+        "image.anime_portrait.pony",
+        "image.anime_portrait.illustrious",
+        "image.realistic_general.flux",
+        "vision.prompt_translate",
+        "vision.image_review",
+        "image.backend.comfyui"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["unknown", "scanning", "reusable", "compatibility_testing", "bound", "ready", "missing", "plan_required", "downloading", "manual_required", "incompatible", "failed", "blocked"]
+    },
+    "binding": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "required": ["candidateId", "compatibility"],
+      "properties": {
+        "candidateId": {"type": "string", "minLength": 1},
+        "compatibility": {"type": "string", "enum": ["verified", "filename-match-candidate", "alias-match-candidate", "unknown", "incompatible"]},
+        "boundAt": {"type": "string", "format": "date-time"}
+      }
+    },
+    "candidates": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/candidate"}
+    },
+    "blockingReasons": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "default": []
+    },
+    "checkedAt": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["candidateId", "displayName", "family", "compatibility", "locationKind", "verification"],
+      "properties": {
+        "candidateId": {"type": "string", "minLength": 1},
+        "displayName": {"type": "string", "minLength": 1},
+        "family": {"type": "string", "minLength": 1},
+        "compatibility": {"type": "string", "enum": ["verified", "filename-match-candidate", "alias-match-candidate", "unknown", "incompatible"]},
+        "locationKind": {"type": "string", "enum": ["fixed-comfy-directory", "fixed-vlm-registry", "manual-import"]},
+        "verification": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["state", "sha256", "architectureFamily", "workflowSmoke"],
+          "properties": {
+            "state": {"type": "string", "enum": ["unverified", "manifest", "minimal-smoke", "fully-verified", "failed"]},
+            "sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+            "architectureFamily": {"type": ["string", "null"], "minLength": 1},
+            "workflowSmoke": {"type": "string", "enum": ["not-run", "passed", "failed"]}
+          }
+        },
+        "missingDependencies": {"type": "array", "items": {"type": "string"}, "default": []}
+      }
+    }
+  }
+}

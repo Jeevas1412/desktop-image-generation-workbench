@@ -1,0 +1,15 @@
+{
+  "name": "dgx-image-workflow-project",
+  "private": true,
+  "version": "0.1.1-alpha.35",
+  "license": "Apache-2.0",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "ci:backend": "npm.cmd --prefix backend test",
+    "ci:frontend": "npm.cmd --prefix frontend test && npm.cmd --prefix frontend run build",
+    "ci:desktop": "npm.cmd --prefix desktop run check && npm.cmd --prefix desktop test",
+    "ci": "npm.cmd run ci:backend && npm.cmd run ci:frontend && npm.cmd run ci:desktop",
+    "release:verify-public-tree": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/release/verify-public-tree.ps1",
+    "release:prepare:unsigned-alpha": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/release/prepare-unsigned-alpha.ps1"
+  }
+}
